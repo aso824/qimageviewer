@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QPixmap>
 #include <QDebug>
+#include <QFileDialog>
+#include <QMessageBox>
 
 namespace Ui {
 class MainWindow;
@@ -22,6 +24,13 @@ private:
     QPixmap pixmap;
 
     void resizeEvent(QResizeEvent *);
+
+    // UI events
+    void setMenuState(bool state);
+
+private slots:
+    void openFileDialog();
+    void closeFile();
 };
 
 #endif // MAINWINDOW_H

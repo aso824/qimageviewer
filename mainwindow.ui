@@ -17,14 +17,29 @@
    <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <property name="styleSheet">
     <string notr="true">background-color: #333333;</string>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
      <widget class="QLabel" name="area">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="text">
        <string/>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
       </property>
      </widget>
     </item>
@@ -55,18 +70,27 @@
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuTools">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>Tools</string>
     </property>
     <addaction name="actionNo_tools_loaded"/>
    </widget>
    <widget class="QMenu" name="menuEffects">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>Effects</string>
     </property>
     <addaction name="actionNo_effects_loaded"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>Edit</string>
     </property>
@@ -132,6 +156,9 @@
    </property>
   </action>
   <action name="actionCut">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Cut</string>
    </property>
