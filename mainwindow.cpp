@@ -7,6 +7,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Allow QLabel with QPixmap to scale down
+    ui->area->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+
     // Connect menu elements
     connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openFileDialog()));
     connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveFile()));
@@ -20,12 +23,19 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::resizeEvent(QResizeEvent *) {
-    // Resize pixmap when resizeEvent on MainWindow called
-    // Only when pixmap have image (not null)
-    if (!pixmap.isNull()) {
-        int w = (ui->area->width() < pixmap.width()) ? ui->area->width() : pixmap.width();
-        int h = (ui->area->height() < pixmap.height()) ? ui->area->height() : pixmap.height();
-        ui->area->setPixmap(pixmap.scaled(w, h, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    // If centralWidget size is smaller than pixmap, scale image
+    if (
+            (ui->centralWidget->width() < pixmap.width()) ||
+            (ui->centralWidget->height() < pixmap.height())
+        ) {
+
+        // Just set pixmap scaled with ratio to w/h of centralWidget
+        ui->area->setPixmap(
+                    pixmap.scaled(
+                        ui->centralWidget->width(),
+                        ui->centralWidget->height(),
+                        Qt::KeepAspectRatio,
+                        Qt::SmoothTransformation));
     }
 }
 
@@ -43,6 +53,10 @@ void MainWindow::openFileDialog() {
     if (pixmap.load(fileName)) {
         // Fill QLabel with pixmap
         ui->area->setPixmap(pixmap);
+
+        // Call resizeEvent to scale image
+        QResizeEvent *resizeEvent = new QResizeEvent(this->size(), this->size());
+        this->resizeEvent(resizeEvent);
 
         // Enable menus
         setMenuState(true);

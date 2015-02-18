@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QResizeEvent>
 
 enum FileState {
     NONE, OPENED, CHANGES
@@ -29,9 +30,8 @@ private:
     QString fileName;
     FileState fState = NONE;
 
-    void resizeEvent(QResizeEvent *);
-
     // UI events
+    void resizeEvent(QResizeEvent *);
     void setMenuState(bool state);
 
 private slots:
