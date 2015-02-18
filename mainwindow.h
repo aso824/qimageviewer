@@ -7,6 +7,10 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
+enum FileState {
+    NONE, OPENED, CHANGES
+};
+
 namespace Ui {
 class MainWindow;
 }
@@ -22,6 +26,8 @@ public:
 private:
     Ui::MainWindow *ui;
     QPixmap pixmap;
+    QString fileName;
+    FileState fState = NONE;
 
     void resizeEvent(QResizeEvent *);
 
@@ -30,7 +36,11 @@ private:
 
 private slots:
     void openFileDialog();
+    void saveFile();
+    void saveFileAs();
     void closeFile();
+
+    void updateWindowTitle(FileState state);
 };
 
 #endif // MAINWINDOW_H
