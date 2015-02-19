@@ -13,9 +13,11 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    effectplugininterface.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    effectplugininterface.h
 
 FORMS    += mainwindow.ui
 

@@ -17,6 +17,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionClose, SIGNAL(triggered()), this, SLOT(closeFile()));
     connect(ui->actionAbout_author, SIGNAL(triggered()), this, SLOT(aboutAuthorPopup()));
     connect(ui->actionAbout_Qt, SIGNAL(triggered()), this, SLOT(aboutQtPopup()));
+
+    // Load plugins
+    loadTools();
+    loadEffects();
 }
 
 MainWindow::~MainWindow()
@@ -234,4 +238,53 @@ void MainWindow::updateWindowTitle(FileState state) {
 
     // Debug info
     qDebug() << "Updating window title with state =" << state;
+}
+
+void MainWindow::loadTools() {
+    //
+}
+
+void MainWindow::loadEffects() {
+    // Set plugin directory
+    QDir pluginsDir("plugins/effects");
+    qDebug() << "Loading effects from" << pluginsDir.absolutePath();
+
+    // Iterate over files
+    unsigned int pluginCount = 0;
+    foreach (QString filename, pluginsDir.entryList(QDir::Files)) {
+        // Ignore files without "effect" in name
+        if (!filename.toLower().contains("effect"))
+            continue;
+
+        // Try to load
+        QPluginLoader *loader = new QPluginLoader(pluginsDir.absoluteFilePath(filename));
+        QObject *pluginInstance = loader->instance();
+
+        if (pluginInstance) {
+            // Cast QObject to plugin
+            EffectPluginInterface *plugin = qobject_cast<EffectPluginInterface*>(pluginInstance);
+
+            // Check if loaded correct
+            if (plugin) {
+                // Add plugin to vector
+                effects.push_back(QPair<EffectPluginInterface*, QPluginLoader*>(plugin, loader));
+
+                // Add menu entry
+                QAction *menuAction = ui->menuEffects->addAction(tr(plugin->getPluginName().toStdString().c_str()));
+                connect(menuAction, SIGNAL(triggered()), plugin, SLOT(execute()));
+            } else {
+                qDebug() << "Failed to load effect" << filename;
+            }
+        } else {
+            qDebug() << "Cant' load effect plugin from file" << filename;
+            qDebug() << "Error:" << loader->errorString();
+        }
+
+        // Increase counter
+        pluginCount++;
+    }
+
+    // Debug info
+    qDebug() << "Loaded" << pluginCount << "effects.";
+
 }

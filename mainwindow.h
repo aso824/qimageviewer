@@ -7,6 +7,11 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QResizeEvent>
+#include <QPluginLoader>
+#include <QVector>
+#include <QPair>
+
+#include "effectplugininterface.h"
 
 enum FileState {
     NONE, OPENED, CHANGES
@@ -29,6 +34,7 @@ private:
     QPixmap pixmap;
     QString fileName;
     FileState fState = NONE;
+    QVector<QPair<EffectPluginInterface*, QPluginLoader*>> effects;
 
     // UI events
     void resizeEvent(QResizeEvent *);
@@ -36,6 +42,7 @@ private:
     void setMenuState(bool state);
 
 private slots:
+    // Menu
     void openFileDialog();
     void saveFile();
     void saveFileAs();
@@ -43,6 +50,11 @@ private slots:
     void aboutAuthorPopup();
     void aboutQtPopup();
 
+    // Plugins
+    void loadTools();
+    void loadEffects();
+
+public slots:
     void updateWindowTitle(FileState state);
 };
 
