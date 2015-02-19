@@ -41,6 +41,28 @@ void MainWindow::resizeEvent(QResizeEvent *) {
     }
 }
 
+void MainWindow::closeEvent(QCloseEvent *event) {
+    // Check if actually opened file is modified
+    if (fState == CHANGES) {
+        // Ask about save
+        QMessageBox::StandardButton reply =
+                QMessageBox::question(this, tr("Unsaved changes"),
+                                      tr(QString("You have unsaved changes in file " + fileName + "<br>"
+                                                 "Do you want do save file?").toStdString().c_str()),
+                                      QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+        if (reply == QMessageBox::Yes) {
+            // When hit "Yes", save file and exit
+            this->saveFile();
+        } else if (reply == QMessageBox::Cancel) {
+            // When hit "cancel" don't close
+            event->ignore();
+        } else {
+            // "No" button hit, which mean no save and exit
+            event->accept();
+        }
+    }
+}
+
 void MainWindow::openFileDialog() {
     // Ask for file to open
     QString fileNameTmp = QFileDialog::getOpenFileName(this, tr("Open image"), "",
@@ -126,6 +148,27 @@ void MainWindow::saveFileAs() {
 }
 
 void MainWindow::closeFile() {
+    // If file is modified, ask user what to do
+    if (fState == CHANGES) {
+        // Ask about save
+        QMessageBox::StandardButton reply =
+                QMessageBox::question(this, tr("Unsaved changes"),
+                                      tr(QString("You have unsaved changes in file " + fileName + "<br>"
+                                                 "Do you want do save file?").toStdString().c_str()),
+                                      QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+        if (reply == QMessageBox::Yes) {
+            // When hit "Yes", save file and continue function
+            this->saveFile();
+        } else if (reply == QMessageBox::Cancel) {
+            // When hit "cancel" exit function
+            return;
+        } else {
+            // "No" button hit, which mean no save and close
+            // No actions here.
+        }
+    }
+
+
     // Debug info
     qDebug() << "Closing file" << fileName;
 
@@ -182,7 +225,7 @@ void MainWindow::updateWindowTitle(FileState state) {
     switch (state) {
         case NONE:      newTitle = appName; break;
         case OPENED:    newTitle = fName + " - " + appName; break;
-        case CHANGES:   newTitle = "[*]" + fName + " - " + appName; break;
+        case CHANGES:   newTitle = "(*) " + fName + " - " + appName; break;
         default:        newTitle = appName;
     }
 

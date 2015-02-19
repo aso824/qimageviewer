@@ -32,6 +32,7 @@ private:
 
     // UI events
     void resizeEvent(QResizeEvent *);
+    void closeEvent(QCloseEvent *event);
     void setMenuState(bool state);
 
 private slots:
