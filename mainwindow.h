@@ -39,6 +39,8 @@ private slots:
     void saveFile();
     void saveFileAs();
     void closeFile();
+    void aboutAuthorPopup();
+    void aboutQtPopup();
 
     void updateWindowTitle(FileState state);
 };

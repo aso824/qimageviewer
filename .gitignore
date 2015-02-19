@@ -1,2 +1,6 @@
 !.gitignore
 *.user
+*.user.*
+*.so
+*.so.*
+*.dll

@@ -15,6 +15,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveFile()));
     connect(ui->actionSave_as, SIGNAL(triggered()), this, SLOT(saveFileAs()));
     connect(ui->actionClose, SIGNAL(triggered()), this, SLOT(closeFile()));
+    connect(ui->actionAbout_author, SIGNAL(triggered()), this, SLOT(aboutAuthorPopup()));
+    connect(ui->actionAbout_Qt, SIGNAL(triggered()), this, SLOT(aboutQtPopup()));
 }
 
 MainWindow::~MainWindow()
@@ -44,6 +46,8 @@ void MainWindow::openFileDialog() {
     QString fileNameTmp = QFileDialog::getOpenFileName(this, tr("Open image"), "",
                           tr("Supported image types (*.jpg *.jpeg *.png *.gif *.bmp);;JPEG (*.jpg *.jpeg);;PNG (*.png);;GIF(*.gif);;Windows bitmap (*.bmp)"));
 
+    qDebug() << "QFileDialog returned" << fileNameTmp;
+
     if (fileNameTmp != "")
         fileName = fileNameTmp;
     else
@@ -63,6 +67,9 @@ void MainWindow::openFileDialog() {
 
         // Change window title
         updateWindowTitle(OPENED);
+
+        // Debug info
+        qDebug() << "Opened file" << fileName;
     } else {
         // Show error
         QMessageBox(QMessageBox::Critical, tr("Error"), tr(QString("Can't open file \"" + fileName + "\"!").toStdString().c_str()), QMessageBox::Ok, this)
@@ -75,6 +82,12 @@ void MainWindow::saveFile() {
     if (!pixmap.isNull()) {
         // Perform save
         pixmap.save(fileName);
+
+        // Debug info
+        qDebug() << "Saved file to" << fileName;
+    } else {
+        // Debug info
+        qDebug() << "Can't save file - pixmap is null!";
     }
 }
 
@@ -85,40 +98,73 @@ void MainWindow::saveFileAs() {
         QString fileNameTmp = QFileDialog::getSaveFileName(this, tr("Save image as"), "",
                               tr("JPEG (*.jpg);;PNG (*.png);;GIF (*.gif);;Windows bitmap (*.bmp)"));
 
-        if (fileNameTmp != "")
-            fileName = fileNameTmp;
-        else
+        qDebug() << "Filename to save:" << fileNameTmp;
+
+        // If user hit cancel, QFileDialog will return empty string
+        if (fileNameTmp == "")
             return;
 
         // Perform save
-        pixmap.save(fileName);
+        if (pixmap.save(fileNameTmp)) {
+            // Update variable
+            fileName = fileNameTmp;
 
-        // Change window title
-        updateWindowTitle(OPENED);
+            // Change window title
+            updateWindowTitle(OPENED);
+
+            // Debug info
+            qDebug() << "\"Save As\" to" << fileName;
+        } else {
+            // Display info
+            QMessageBox(QMessageBox::Critical, tr("Error"),
+                        tr(QString("Cannot save file " + fileNameTmp).toStdString().c_str()),
+                        QMessageBox::Ok, this).exec();
+            // Debug info
+            qDebug() << "Error while saving as" << fileNameTmp;
+        }
     }
 }
 
 void MainWindow::closeFile() {
+    // Debug info
+    qDebug() << "Closing file" << fileName;
+
     // Hide image
     ui->area->clear();
 
     // Clear file name
     fileName.clear();
 
+    // Restore empty window title
+    updateWindowTitle(NONE);
+
     // Disable menus
     setMenuState(false);
+}
 
-    // Restore window title
-    updateWindowTitle(NONE);
+void MainWindow::aboutAuthorPopup() {
+    QString text = "Author: Jan \"aso\" Szenborn<br>"
+                   "<a href=\"http://aso.uh.net.pl\">aso.uh.net.pl</a><br>"
+                   "<a href=\"http://github.com/aso824/qimageviewer\">github.com/aso824/qimageviewer</a><br><br>"
+                   "This program is on LGPL license. See LICENSE.txt for details.";
+    QMessageBox::about(this, tr("About author"), tr(text.toStdString().c_str()));
+}
+
+void MainWindow::aboutQtPopup() {
+    QMessageBox::aboutQt(this, tr("About Qt"));
 }
 
 void MainWindow::setMenuState(bool state) {
+    // Set enabled or disabled on specific elements
     ui->actionClose->setEnabled(state);
     ui->actionSave->setEnabled(state);
     ui->actionSave_as->setEnabled(state);
     ui->menuEdit->setEnabled(state);
     ui->menuEffects->setEnabled(state);
     ui->menuTools->setEnabled(state);
+
+    // Debug info
+    qDebug() << "Set menu state to" << state;
 }
 
 void MainWindow::updateWindowTitle(FileState state) {
@@ -142,4 +188,7 @@ void MainWindow::updateWindowTitle(FileState state) {
 
     // Set it
     this->setWindowTitle(newTitle);
+
+    // Debug info
+    qDebug() << "Updating window title with state =" << state;
 }
