@@ -4,3 +4,7 @@
 *.so
 *.so.*
 *.dll
+moc_*
+Makefile
+*.o
+*_global.h

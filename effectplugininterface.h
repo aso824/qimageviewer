@@ -10,11 +10,11 @@ class EffectPluginInterface : public QObject
 {
     Q_OBJECT
 public:
-    explicit EffectPluginInterface(QObject *parent = 0);
+    virtual ~EffectPluginInterface() { }
+
     virtual QString getPluginName() = 0;
     virtual QString getAuthorName() = 0;
     virtual float getVersion() = 0;
-    virtual ~EffectPluginInterface() { }
     void setImage(QImage *newImage);
 
 public slots:
