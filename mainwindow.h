@@ -57,6 +57,7 @@ private slots:
 
 public slots:
     void updateWindowTitle(FileState state);
+    void updateImage();
 };
 
 #endif // MAINWINDOW_H

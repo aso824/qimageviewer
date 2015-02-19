@@ -6,6 +6,9 @@
 
 #include <QString>
 #include <QMessageBox>
+#include <QImage>
+#include <QColor>
+#include <QRgb>
 
 class GREYSCALEFILTERSHARED_EXPORT GreyscaleFilter : public FilterPluginInterface
 {

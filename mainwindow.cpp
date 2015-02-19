@@ -44,20 +44,7 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::resizeEvent(QResizeEvent *) {
-    // If centralWidget size is smaller than pixmap, scale image
-    if (
-            (ui->centralWidget->width() < image->width()) ||
-            (ui->centralWidget->height() < image->height())
-        ) {
-
-        // Just set pixmap scaled with ratio to w/h of centralWidget
-        ui->area->setPixmap(
-                    QPixmap::fromImage(*image).scaled(
-                        ui->centralWidget->width(),
-                        ui->centralWidget->height(),
-                        Qt::KeepAspectRatio,
-                        Qt::SmoothTransformation));
-    }
+    updateImage();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
@@ -79,6 +66,26 @@ void MainWindow::closeEvent(QCloseEvent *event) {
             // "No" button hit, which mean no save and exit
             event->accept();
         }
+    }
+}
+
+void MainWindow::updateImage() {
+    // If centralWidget size is smaller than pixmap, scale image
+    if (
+            (ui->centralWidget->width() < image->width()) ||
+            (ui->centralWidget->height() < image->height())
+        ) {
+
+        // Just set pixmap scaled with ratio to w/h of centralWidget
+        ui->area->setPixmap(
+                    QPixmap::fromImage(*image).scaled(
+                        ui->centralWidget->width(),
+                        ui->centralWidget->height(),
+                        Qt::KeepAspectRatio,
+                        Qt::SmoothTransformation));
+    } else {
+        // If window is bigger than pixmap, just redraw
+        ui->area->setPixmap(QPixmap::fromImage(*image));
     }
 }
 
@@ -306,6 +313,9 @@ void MainWindow::loadFilters() {
                 // Add menu entry
                 QAction *menuAction = ui->menuFilters->addAction(tr(plugin->getPluginName().toStdString().c_str()));
                 connect(menuAction, SIGNAL(triggered()), plugin, SLOT(execute()));
+
+                // Connect plugin signals
+                connect(plugin, SIGNAL(updateImage()), this, SLOT(updateImage()));
 
                 // Increase counter
                 pluginCount++;

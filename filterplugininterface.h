@@ -24,6 +24,7 @@ signals:
     void updateImage();
     void applyChanges();
     void revertBack();
+    void finished();
 
 protected:
     QImage *image;
