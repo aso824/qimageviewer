@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QPixmap>
+#include <QImage>
 #include <QDebug>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -31,7 +32,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QPixmap pixmap;
+    QImage *image;
     QString fileName;
     FileState fState = NONE;
     QVector<QPair<EffectPluginInterface*, QPluginLoader*>> effects;

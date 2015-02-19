@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QtPlugin>
-#include <QPixmap>
+#include <QImage>
 #include <QString>
 
 class EffectPluginInterface : public QObject
@@ -15,15 +15,18 @@ public:
     virtual QString getAuthorName() = 0;
     virtual float getVersion() = 0;
     virtual ~EffectPluginInterface() { }
+    void setImage(QImage *newImage);
 
 public slots:
     virtual void execute() = 0;
-    virtual void execute(QPixmap *pixmap) = 0;
 
 signals:
     void updateImage();
     void applyChanges();
     void revertBack();
+
+protected:
+    QImage *image;
 
 };
 

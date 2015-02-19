@@ -7,6 +7,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Create QImage
+    image = new QImage();
+
     // Allow QLabel with QPixmap to scale down
     ui->area->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
@@ -25,19 +28,31 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    // Free plugins
+    unsigned int effectsCount = 0;
+    QPair<EffectPluginInterface*, QPluginLoader*> pair1;
+    foreach (pair1, effects) {
+        pair1.second->unload();
+        delete pair1.first;
+        delete pair1.second;
+        effectsCount++;
+    }
+
+    qDebug() << "Unloaded" << effectsCount << "effects";
+
     delete ui;
 }
 
 void MainWindow::resizeEvent(QResizeEvent *) {
     // If centralWidget size is smaller than pixmap, scale image
     if (
-            (ui->centralWidget->width() < pixmap.width()) ||
-            (ui->centralWidget->height() < pixmap.height())
+            (ui->centralWidget->width() < image->width()) ||
+            (ui->centralWidget->height() < image->height())
         ) {
 
         // Just set pixmap scaled with ratio to w/h of centralWidget
         ui->area->setPixmap(
-                    pixmap.scaled(
+                    QPixmap::fromImage(*image).scaled(
                         ui->centralWidget->width(),
                         ui->centralWidget->height(),
                         Qt::KeepAspectRatio,
@@ -80,9 +95,9 @@ void MainWindow::openFileDialog() {
         return;
 
     // Try to load
-    if (pixmap.load(fileName)) {
+    if (image->load(fileName)) {
         // Fill QLabel with pixmap
-        ui->area->setPixmap(pixmap);
+        ui->area->setPixmap(QPixmap::fromImage(*image));
 
         // Call resizeEvent to scale image
         QResizeEvent *resizeEvent = new QResizeEvent(this->size(), this->size());
@@ -105,9 +120,9 @@ void MainWindow::openFileDialog() {
 
 void MainWindow::saveFile() {
     // Check pixmap
-    if (!pixmap.isNull()) {
+    if (!image->isNull()) {
         // Perform save
-        pixmap.save(fileName);
+        image->save(fileName);
 
         // Debug info
         qDebug() << "Saved file to" << fileName;
@@ -119,7 +134,7 @@ void MainWindow::saveFile() {
 
 void MainWindow::saveFileAs() {
     // Chec pixmap
-    if (!pixmap.isNull()) {
+    if (!image->isNull()) {
         // Ask for file name
         QString fileNameTmp = QFileDialog::getSaveFileName(this, tr("Save image as"), "",
                               tr("JPEG (*.jpg);;PNG (*.png);;GIF (*.gif);;Windows bitmap (*.bmp)"));
@@ -131,7 +146,7 @@ void MainWindow::saveFileAs() {
             return;
 
         // Perform save
-        if (pixmap.save(fileNameTmp)) {
+        if (image->save(fileNameTmp)) {
             // Update variable
             fileName = fileNameTmp;
 
