@@ -7,8 +7,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // Create QImage
-    image = new QImage();
+    // Create ImageManager
+    image = new ImageManager();
+    connect(image, SIGNAL(redraw()), this, SLOT(updateImage()));
 
     // Allow QLabel with QPixmap to scale down
     ui->area->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
@@ -20,6 +21,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionClose, SIGNAL(triggered()), this, SLOT(closeFile()));
     connect(ui->actionAbout_author, SIGNAL(triggered()), this, SLOT(aboutAuthorPopup()));
     connect(ui->actionAbout_Qt, SIGNAL(triggered()), this, SLOT(aboutQtPopup()));
+
+    connect(ui->actionUndo, SIGNAL(triggered()), image, SLOT(undo()));
 
     // Load plugins
     loadTools();
@@ -40,6 +43,7 @@ MainWindow::~MainWindow()
 
     qDebug() << "Unloaded" << filtersCount << "filters";
 
+    delete image;
     delete ui;
 }
 
@@ -78,14 +82,14 @@ void MainWindow::updateImage() {
 
         // Just set pixmap scaled with ratio to w/h of centralWidget
         ui->area->setPixmap(
-                    QPixmap::fromImage(*image).scaled(
+                    QPixmap::fromImage(*image->get()).scaled(
                         ui->centralWidget->width(),
                         ui->centralWidget->height(),
                         Qt::KeepAspectRatio,
                         Qt::SmoothTransformation));
     } else {
         // If window is bigger than pixmap, just redraw
-        ui->area->setPixmap(QPixmap::fromImage(*image));
+        ui->area->setPixmap(QPixmap::fromImage(*image->get()));
     }
 }
 
@@ -104,7 +108,7 @@ void MainWindow::openFileDialog() {
     // Try to load
     if (image->load(fileName)) {
         // Fill QLabel with pixmap
-        ui->area->setPixmap(QPixmap::fromImage(*image));
+        ui->area->setPixmap(QPixmap::fromImage(*image->get()));
 
         // Call resizeEvent to scale image
         QResizeEvent *resizeEvent = new QResizeEvent(this->size(), this->size());
@@ -118,6 +122,9 @@ void MainWindow::openFileDialog() {
 
         // Debug info
         qDebug() << "Opened file" << fileName;
+
+        // Adding original copy
+        image->changes();
     } else {
         // Show error
         QMessageBox(QMessageBox::Critical, tr("Error"), tr(QString("Can't open file \"" + fileName + "\"!").toStdString().c_str()), QMessageBox::Ok, this)
@@ -127,7 +134,7 @@ void MainWindow::openFileDialog() {
 
 void MainWindow::saveFile() {
     // Check pixmap
-    if (!image->isNull()) {
+    if (!image->get()->isNull()) {
         // Perform save
         image->save(fileName);
 
@@ -141,7 +148,7 @@ void MainWindow::saveFile() {
 
 void MainWindow::saveFileAs() {
     // Chec pixmap
-    if (!image->isNull()) {
+    if (!image->get()->isNull()) {
         // Ask for file name
         QString fileNameTmp = QFileDialog::getSaveFileName(this, tr("Save image as"), "",
                               tr("JPEG (*.jpg);;PNG (*.png);;GIF (*.gif);;Windows bitmap (*.bmp)"));
@@ -301,7 +308,7 @@ void MainWindow::loadFilters() {
             if (plugin) {
 
                 // Give plugin an image
-                plugin->setImage(image);
+                plugin->setImage(image->get());
 
                 // Add plugin to vector
                 filters.push_back(QPair<FilterPluginInterface*, QPluginLoader*>(plugin, loader));
@@ -316,6 +323,7 @@ void MainWindow::loadFilters() {
 
                 // Connect plugin signals
                 connect(plugin, SIGNAL(updateImage()), this, SLOT(updateImage()));
+                connect(plugin, SIGNAL(applyChanges()), image, SLOT(changes()));
 
                 // Increase counter
                 pluginCount++;

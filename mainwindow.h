@@ -13,6 +13,7 @@
 #include <QPair>
 
 #include "filterplugininterface.h"
+#include "imagemanager.h"
 
 enum FileState {
     NONE, OPENED, CHANGES
@@ -32,7 +33,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QImage *image;
+    ImageManager *image;
     QString fileName;
     FileState fState = NONE;
     QVector<QPair<FilterPluginInterface*, QPluginLoader*>> filters;

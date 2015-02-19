@@ -14,10 +14,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    filterplugininterface.cpp
+    filterplugininterface.cpp \
+    imagemanager.cpp
 
 HEADERS  += mainwindow.h \
-    filterplugininterface.h
+    filterplugininterface.h \
+    imagemanager.h
 
 FORMS    += mainwindow.ui
 
