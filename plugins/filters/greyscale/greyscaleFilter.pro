@@ -6,16 +6,18 @@
 
 QT       += widgets
 
-TARGET = grayscaleEffect
+TARGET = greyscaleFilter
 TEMPLATE = lib
 
 DEFINES += GRAYSCALEEFFECT_LIBRARY
 
-SOURCES += grayscaleeffect.cpp
+SOURCES += \
+    greyscalefilter.cpp
 
-HEADERS += grayscaleeffect.h\
-        grayscaleeffect_global.h\
-        ../../effectplugininterface.h
+HEADERS +=\
+        ../../filterplugininterface.h \
+    greyscalefilter.h \
+    greyscalefilter_global.h
 
 unix {
     target.path = /usr/lib

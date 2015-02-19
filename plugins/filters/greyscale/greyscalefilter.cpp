@@ -1,5 +1,5 @@
-#include "grayscaleeffect.h"
+#include "greyscalefilter.h"
 
-void GrayscaleEffect::execute() {
+void GreyscaleFilter::execute() {
     QMessageBox(QMessageBox::Information, "Info", "Ok!", QMessageBox::Ok).exec();
 }

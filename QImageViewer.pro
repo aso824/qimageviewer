@@ -14,10 +14,10 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    effectplugininterface.cpp
+    filterplugininterface.cpp
 
 HEADERS  += mainwindow.h \
-    effectplugininterface.h
+    filterplugininterface.h
 
 FORMS    += mainwindow.ui
 

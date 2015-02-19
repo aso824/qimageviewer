@@ -23,22 +23,22 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Load plugins
     loadTools();
-    loadEffects();
+    loadFilters();
 }
 
 MainWindow::~MainWindow()
 {
     // Free plugins
-    unsigned int effectsCount = 0;
-    QPair<EffectPluginInterface*, QPluginLoader*> pair1;
-    foreach (pair1, effects) {
+    unsigned int filtersCount = 0;
+    QPair<FilterPluginInterface*, QPluginLoader*> pair1;
+    foreach (pair1, filters) {
+        qDebug() << "Unloading filter" << pair1.first->getPluginName() << "...";
         pair1.second->unload();
-        //delete pair1.first;
-        //delete pair1.second;
-        effectsCount++;
+        delete pair1.second;
+        filtersCount++;
     }
 
-    qDebug() << "Unloaded" << effectsCount << "effects";
+    qDebug() << "Unloaded" << filtersCount << "filters";
 
     delete ui;
 }
@@ -222,7 +222,7 @@ void MainWindow::setMenuState(bool state) {
     ui->actionSave->setEnabled(state);
     ui->actionSave_as->setEnabled(state);
     ui->menuEdit->setEnabled(state);
-    ui->menuEffects->setEnabled(state);
+    ui->menuFilters->setEnabled(state);
     ui->menuTools->setEnabled(state);
 
     // Debug info
@@ -259,25 +259,28 @@ void MainWindow::loadTools() {
     //
 }
 
-void MainWindow::loadEffects() {
+void MainWindow::loadFilters() {
     // Set plugin directory
-    QDir pluginsDir("plugins/effects");
-    qDebug() << "Loading effects from" << pluginsDir.absolutePath();
+    QDir pluginsDir("plugins/filters");
+    qDebug() << "Loading filters from" << pluginsDir.absolutePath();
 
     // File filter
-    QStringList filters;
+    QStringList filenameFilters;
     #ifdef __linux
-        filters << "*.so";
+        filenameFilters << "*.so";
     #elif _WIN32
-        filters << "*.dll";
+        filenameFilters << "*.dll";
     #endif
 
     // Iterate over files
     unsigned int pluginCount = 0;
-    foreach (QString filename, pluginsDir.entryList(filters)) {
-        // Ignore files without "effect" in name
-        if (!filename.toLower().contains("effect"))
+    foreach (QString filename, pluginsDir.entryList(filenameFilters)) {
+        // Ignore files without "filter" in name
+        if (!filename.toLower().contains("filter"))
             continue;
+
+        // Debug info
+        qDebug() << "Loading filter from" << filename;
 
         // Try to load
         QPluginLoader *loader = new QPluginLoader(pluginsDir.absoluteFilePath(filename));
@@ -285,7 +288,7 @@ void MainWindow::loadEffects() {
 
         if (pluginInstance) {
             // Cast QObject to plugin
-            EffectPluginInterface *plugin = qobject_cast<EffectPluginInterface*>(pluginInstance);
+            FilterPluginInterface *plugin = qobject_cast<FilterPluginInterface*>(pluginInstance);
 
             // Check if loaded correct
             if (plugin) {
@@ -294,28 +297,28 @@ void MainWindow::loadEffects() {
                 plugin->setImage(image);
 
                 // Add plugin to vector
-                effects.push_back(QPair<EffectPluginInterface*, QPluginLoader*>(plugin, loader));
+                filters.push_back(QPair<FilterPluginInterface*, QPluginLoader*>(plugin, loader));
 
                 // If this is first plugin, clear list
                 if (pluginCount == 0)
-                    ui->menuEffects->clear();
+                    ui->menuFilters->clear();
 
                 // Add menu entry
-                QAction *menuAction = ui->menuEffects->addAction(tr(plugin->getPluginName().toStdString().c_str()));
+                QAction *menuAction = ui->menuFilters->addAction(tr(plugin->getPluginName().toStdString().c_str()));
                 connect(menuAction, SIGNAL(triggered()), plugin, SLOT(execute()));
 
                 // Increase counter
                 pluginCount++;
             } else {
-                qDebug() << "Failed to load effect" << filename;
+                qDebug() << "Failed to load filter" << filename;
             }
         } else {
-            qDebug() << "Can't' load effect plugin from file" << filename;
+            qDebug() << "Can't' load filter plugin from file" << filename;
             qDebug() << "Error:" << loader->errorString();
         }
     }
 
     // Debug info
-    qDebug() << "Loaded" << pluginCount << "effects.";
+    qDebug() << "Loaded" << pluginCount << "filters.";
 
 }

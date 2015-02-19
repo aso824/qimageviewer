@@ -12,7 +12,7 @@
 #include <QVector>
 #include <QPair>
 
-#include "effectplugininterface.h"
+#include "filterplugininterface.h"
 
 enum FileState {
     NONE, OPENED, CHANGES
@@ -35,7 +35,7 @@ private:
     QImage *image;
     QString fileName;
     FileState fState = NONE;
-    QVector<QPair<EffectPluginInterface*, QPluginLoader*>> effects;
+    QVector<QPair<FilterPluginInterface*, QPluginLoader*>> filters;
 
     // UI events
     void resizeEvent(QResizeEvent *);
@@ -53,7 +53,7 @@ private slots:
 
     // Plugins
     void loadTools();
-    void loadEffects();
+    void loadFilters();
 
 public slots:
     void updateWindowTitle(FileState state);

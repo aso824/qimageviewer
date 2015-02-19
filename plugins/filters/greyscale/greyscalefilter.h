@@ -1,17 +1,17 @@
-#ifndef GRAYSCALEEFFECT_H
-#define GRAYSCALEEFFECT_H
+#ifndef GREYSCALEFILTER_H
+#define GREYSCALEFILTER_H
 
-#include "grayscaleeffect_global.h"
-#include "../../effectplugininterface.h"
+#include "greyscalefilter_global.h"
+#include "../../filterplugininterface.h"
 
 #include <QString>
 #include <QMessageBox>
 
-class GRAYSCALEEFFECTSHARED_EXPORT GrayscaleEffect : public EffectPluginInterface
+class GREYSCALEFILTERSHARED_EXPORT GreyscaleFilter : public FilterPluginInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "pl.aso.qimageviewer.effectPlugin/1.0")
-    Q_INTERFACES(EffectPluginInterface)
+    Q_PLUGIN_METADATA(IID "pl.aso.qimageviewer.filterPlugin/1.0")
+    Q_INTERFACES(FilterPluginInterface)
 
     public:
         QString getPluginName() { return "Greyscale"; }
@@ -28,4 +28,4 @@ class GRAYSCALEEFFECTSHARED_EXPORT GrayscaleEffect : public EffectPluginInterfac
 
 };
 
-#endif // GRAYSCALEEFFECT_H
+#endif // GREYSCALEFILTER_H

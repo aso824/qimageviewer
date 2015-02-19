@@ -1,16 +1,16 @@
-#ifndef EFFECTPLUGININTERFACE_H
-#define EFFECTPLUGININTERFACE_H
+#ifndef FILTERPLUGININTERFACE_H
+#define FILTERPLUGININTERFACE_H
 
 #include <QObject>
 #include <QtPlugin>
 #include <QImage>
 #include <QString>
 
-class EffectPluginInterface : public QObject
+class FilterPluginInterface : public QObject
 {
     Q_OBJECT
 public:
-    virtual ~EffectPluginInterface() { }
+    virtual ~FilterPluginInterface() { }
 
     virtual QString getPluginName() = 0;
     virtual QString getAuthorName() = 0;
@@ -30,6 +30,6 @@ protected:
 
 };
 
-Q_DECLARE_INTERFACE(EffectPluginInterface, "pl.aso.qimageviewer.effectPlugin/1.0");
+Q_DECLARE_INTERFACE(FilterPluginInterface, "pl.aso.qimageviewer.filterPlugin/1.0");
 
-#endif // EFFECTPLUGININTERFACE_H
+#endif // FILTERPLUGININTERFACE_H

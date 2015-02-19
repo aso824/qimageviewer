@@ -79,14 +79,14 @@
     </property>
     <addaction name="actionNo_tools_loaded"/>
    </widget>
-   <widget class="QMenu" name="menuEffects">
+   <widget class="QMenu" name="menuFilters">
     <property name="enabled">
      <bool>false</bool>
     </property>
     <property name="title">
-     <string>Effects</string>
+     <string>Filters</string>
     </property>
-    <addaction name="actionNo_effects_loaded"/>
+    <addaction name="actionNo_filters_loaded"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="enabled">
@@ -104,7 +104,7 @@
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuTools"/>
-   <addaction name="menuEffects"/>
+   <addaction name="menuFilters"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -190,12 +190,12 @@
     <string>No tools loaded</string>
    </property>
   </action>
-  <action name="actionNo_effects_loaded">
+  <action name="actionNo_filters_loaded">
    <property name="enabled">
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>No effects loaded</string>
+    <string>No filters loaded</string>
    </property>
   </action>
   <action name="actionSave_as">
