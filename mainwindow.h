@@ -11,6 +11,7 @@
 #include <QPluginLoader>
 #include <QVector>
 #include <QPair>
+#include <QVariant>
 
 #include "filterplugininterface.h"
 #include "imagemanager.h"
@@ -55,6 +56,7 @@ private slots:
     // Plugins
     void loadTools();
     void loadFilters();
+    void pluginExecute();
 
 public slots:
     void updateWindowTitle(FileState state);

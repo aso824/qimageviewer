@@ -2,7 +2,7 @@
 #define GREYSCALEFILTER_H
 
 #include "greyscalefilter_global.h"
-#include "../../filterplugininterface.h"
+#include "../../../filterplugininterface.h"
 
 #include <QString>
 #include <QMessageBox>
@@ -22,7 +22,7 @@ class GREYSCALEFILTERSHARED_EXPORT GreyscaleFilter : public FilterPluginInterfac
         float getVersion() { return 1.0f; }
 
     public slots:
-        void execute();
+        void execute(QImage *image);
 
     signals:
         void updateImage();

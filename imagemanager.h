@@ -51,7 +51,7 @@ class ImageManager : public QObject
         QString file;
 
         // Maximum number of stored images
-        unsigned short max = 3;
+        unsigned short max = 5;
 
         // Current image index (newest is 0)
         unsigned short current = 0;

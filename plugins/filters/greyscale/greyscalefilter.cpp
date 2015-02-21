@@ -1,6 +1,6 @@
 #include "greyscalefilter.h"
 
-void GreyscaleFilter::execute() {
+void GreyscaleFilter::execute(QImage *image) {
     // If QImage is null, show error and stop
     if (image->isNull()) {
         QMessageBox(QMessageBox::Critical, tr("Plugin error"), tr("No image loaded."), QMessageBox::Ok).exec();

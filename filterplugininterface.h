@@ -15,19 +15,15 @@ public:
     virtual QString getPluginName() = 0;
     virtual QString getAuthorName() = 0;
     virtual float getVersion() = 0;
-    void setImage(QImage *newImage);
 
 public slots:
-    virtual void execute() = 0;
+    virtual void execute(QImage *image) = 0;
 
 signals:
     void updateImage();
     void applyChanges();
     void revertBack();
     void finished();
-
-protected:
-    QImage *image;
 
 };
 

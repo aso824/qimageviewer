@@ -306,10 +306,6 @@ void MainWindow::loadFilters() {
 
             // Check if loaded correct
             if (plugin) {
-
-                // Give plugin an image
-                plugin->setImage(image->get());
-
                 // Add plugin to vector
                 filters.push_back(QPair<FilterPluginInterface*, QPluginLoader*>(plugin, loader));
 
@@ -317,9 +313,11 @@ void MainWindow::loadFilters() {
                 if (pluginCount == 0)
                     ui->menuFilters->clear();
 
-                // Add menu entry
+                // Add menu entry and connect it
                 QAction *menuAction = ui->menuFilters->addAction(tr(plugin->getPluginName().toStdString().c_str()));
-                connect(menuAction, SIGNAL(triggered()), plugin, SLOT(execute()));
+                QVariant pluginVariant = qVariantFromValue((void*)plugin);
+                menuAction->setData(pluginVariant);
+                connect(menuAction, SIGNAL(triggered()), this, SLOT(pluginExecute()));
 
                 // Connect plugin signals
                 connect(plugin, SIGNAL(updateImage()), this, SLOT(updateImage()));
@@ -338,5 +336,20 @@ void MainWindow::loadFilters() {
 
     // Debug info
     qDebug() << "Loaded" << pluginCount << "filters.";
+
+}
+
+void MainWindow::pluginExecute() {
+    // Get sender() and cast it to QAction
+    QAction *action = qobject_cast<QAction*>(sender());
+
+    // Get data from QAction
+    QVariant v = action->data();
+
+    // Convert QVariant to FilterPluginInterface*
+    FilterPluginInterface* plugin = (FilterPluginInterface*)v.value<void*>();
+
+    // Execute
+    plugin->execute(image->get());
 
 }
