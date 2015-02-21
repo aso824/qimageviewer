@@ -20,6 +20,7 @@ class GREYSCALEFILTERSHARED_EXPORT GreyscaleFilter : public PluginInterface
         QString getPluginName() { return "Greyscale"; }
         QString getAuthorName() { return "Jan \"aso\" Szenborn"; }
         float getVersion() { return 1.0f; }
+        PluginType getType() { return FILTER; }
 
     public slots:
         void execute(QImage *image);

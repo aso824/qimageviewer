@@ -6,6 +6,8 @@
 #include <QImage>
 #include <QString>
 
+enum PluginType { TOOL, FILTER };
+
 class PluginInterface : public QObject
 {
     Q_OBJECT
@@ -15,6 +17,7 @@ public:
     virtual QString getPluginName() = 0;
     virtual QString getAuthorName() = 0;
     virtual float getVersion() = 0;
+    virtual PluginType getType() = 0;
 
 public slots:
     virtual void execute(QImage *image) = 0;
