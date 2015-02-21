@@ -15,7 +15,7 @@ SOURCES += \
     greyscalefilter.cpp
 
 HEADERS +=\
-        ../../../filterplugininterface.h \
+        ../../../plugininterface.h \
     greyscalefilter.h \
     greyscalefilter_global.h
 

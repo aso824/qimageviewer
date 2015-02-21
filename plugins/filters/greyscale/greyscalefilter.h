@@ -2,7 +2,7 @@
 #define GREYSCALEFILTER_H
 
 #include "greyscalefilter_global.h"
-#include "../../../filterplugininterface.h"
+#include "../../../plugininterface.h"
 
 #include <QString>
 #include <QMessageBox>
@@ -10,11 +10,11 @@
 #include <QColor>
 #include <QRgb>
 
-class GREYSCALEFILTERSHARED_EXPORT GreyscaleFilter : public FilterPluginInterface
+class GREYSCALEFILTERSHARED_EXPORT GreyscaleFilter : public PluginInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "pl.aso.qimageviewer.filterPlugin/1.0")
-    Q_INTERFACES(FilterPluginInterface)
+    Q_PLUGIN_METADATA(IID "pl.aso.qimageviewer.pluginInterface/1.0")
+    Q_INTERFACES(PluginInterface)
 
     public:
         QString getPluginName() { return "Greyscale"; }

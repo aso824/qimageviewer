@@ -13,7 +13,7 @@
 #include <QPair>
 #include <QVariant>
 
-#include "filterplugininterface.h"
+#include "plugininterface.h"
 #include "imagemanager.h"
 
 enum FileState {
@@ -37,7 +37,7 @@ private:
     ImageManager *image;
     QString fileName;
     FileState fState = NONE;
-    QVector<QPair<FilterPluginInterface*, QPluginLoader*>> filters;
+    QVector<QPair<PluginInterface*, QPluginLoader*>> filters;
 
     // UI events
     void resizeEvent(QResizeEvent *);

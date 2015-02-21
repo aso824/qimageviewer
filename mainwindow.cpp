@@ -33,7 +33,7 @@ MainWindow::~MainWindow()
 {
     // Free plugins
     unsigned int filtersCount = 0;
-    QPair<FilterPluginInterface*, QPluginLoader*> pair1;
+    QPair<PluginInterface*, QPluginLoader*> pair1;
     foreach (pair1, filters) {
         qDebug() << "Unloading filter" << pair1.first->getPluginName() << "...";
         pair1.second->unload();
@@ -302,12 +302,12 @@ void MainWindow::loadFilters() {
 
         if (pluginInstance) {
             // Cast QObject to plugin
-            FilterPluginInterface *plugin = qobject_cast<FilterPluginInterface*>(pluginInstance);
+            PluginInterface *plugin = qobject_cast<PluginInterface*>(pluginInstance);
 
             // Check if loaded correct
             if (plugin) {
                 // Add plugin to vector
-                filters.push_back(QPair<FilterPluginInterface*, QPluginLoader*>(plugin, loader));
+                filters.push_back(QPair<PluginInterface*, QPluginLoader*>(plugin, loader));
 
                 // If this is first plugin, clear list
                 if (pluginCount == 0)
@@ -347,7 +347,7 @@ void MainWindow::pluginExecute() {
     QVariant v = action->data();
 
     // Convert QVariant to FilterPluginInterface*
-    FilterPluginInterface* plugin = (FilterPluginInterface*)v.value<void*>();
+    PluginInterface* plugin = (PluginInterface*)v.value<void*>();
 
     // Execute
     plugin->execute(image->get());

@@ -1,16 +1,16 @@
-#ifndef FILTERPLUGININTERFACE_H
-#define FILTERPLUGININTERFACE_H
+#ifndef PLUGININTERFACE_H
+#define PLUGININTERFACE_H
 
 #include <QObject>
 #include <QtPlugin>
 #include <QImage>
 #include <QString>
 
-class FilterPluginInterface : public QObject
+class PluginInterface : public QObject
 {
     Q_OBJECT
 public:
-    virtual ~FilterPluginInterface() { }
+    virtual ~PluginInterface() { }
 
     virtual QString getPluginName() = 0;
     virtual QString getAuthorName() = 0;
@@ -27,6 +27,6 @@ signals:
 
 };
 
-Q_DECLARE_INTERFACE(FilterPluginInterface, "pl.aso.qimageviewer.filterPlugin/1.0");
+Q_DECLARE_INTERFACE(PluginInterface, "pl.aso.qimageviewer.pluginInterface/1.0");
 
-#endif // FILTERPLUGININTERFACE_H
+#endif // PLUGININTERFACE_H
