@@ -12,12 +12,14 @@ TEMPLATE = lib
 DEFINES += GRAYSCALEEFFECT_LIBRARY
 
 SOURCES += \
-    greyscalefilter.cpp
+    greyscalefilter.cpp \
+    dialog.cpp
 
 HEADERS +=\
         ../../../plugininterface.h \
     greyscalefilter.h \
-    greyscalefilter_global.h
+    greyscalefilter_global.h \
+    dialog.h
 
 unix {
     target.path = /usr/lib
@@ -25,3 +27,6 @@ unix {
 }
 
 CONFIG += plugin
+
+FORMS += \
+    dialog.ui

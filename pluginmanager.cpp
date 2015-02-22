@@ -95,6 +95,7 @@ bool PluginManager::load(QString filename) {
     // Connect plugins signals (PluginManager will route signals outside)
     connect(plugin, SIGNAL(applyChanges()), this, SLOT(apply()));
     connect(plugin, SIGNAL(updateImage()), this, SLOT(update()));
+    connect(plugin, SIGNAL(setImage(QImage*)), this, SLOT(setImage(QImage*)));
 
     // Add plugin to QMap
     plugins[filename] = qMakePair<PluginInterface*, QPluginLoader*>(plugin, loader);

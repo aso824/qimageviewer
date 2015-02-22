@@ -62,6 +62,7 @@ public slots:
     // For each plugin
     void update() { emit updateImage(); }
     void apply() { emit applyChanges(); }
+    void setImage(QImage* img) { image->setImage(img); }
 
 protected:
     QMap<QString, QPair<PluginInterface*, QPluginLoader*>> plugins;

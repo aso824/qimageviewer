@@ -42,6 +42,9 @@ class ImageManager : public QObject
         void undo();
         void redo();
 
+        // For plugins
+        void setImage(QImage* img) { workingCopy = img; }
+
     protected:
         // Memory for current and past images
         QImage* workingCopy;

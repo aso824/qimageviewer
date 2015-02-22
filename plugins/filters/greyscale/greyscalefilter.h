@@ -3,12 +3,14 @@
 
 #include "greyscalefilter_global.h"
 #include "../../../plugininterface.h"
+#include "dialog.h"
 
 #include <QString>
 #include <QMessageBox>
 #include <QImage>
 #include <QColor>
 #include <QRgb>
+#include <QDebug>
 
 class GREYSCALEFILTERSHARED_EXPORT GreyscaleFilter : public PluginInterface
 {
@@ -28,7 +30,18 @@ class GREYSCALEFILTERSHARED_EXPORT GreyscaleFilter : public PluginInterface
     signals:
         void updateImage();
         void applyChanges();
-        void revertBack();
+
+    private slots:
+        void slotAverage() { processAverage(img); }
+        void slotYUV() { processYUV(img); }
+        void endOK();
+        void endCancel();
+
+    protected:
+        QImage *img;
+        QImage backup;
+        void processAverage(QImage* image);
+        void processYUV(QImage* image);
 
 };
 

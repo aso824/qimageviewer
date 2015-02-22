@@ -25,6 +25,7 @@ public slots:
 signals:
     void updateImage();
     void applyChanges();
+    void setImage(QImage *img);
 
 };
 
