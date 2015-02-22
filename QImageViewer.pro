@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     imagemanager.cpp \
-    plugininterface.cpp
+    plugininterface.cpp \
+    pluginmanager.cpp
 
 HEADERS  += mainwindow.h \
     imagemanager.h \
-    plugininterface.h
+    plugininterface.h \
+    pluginmanager.h
 
 FORMS    += mainwindow.ui
 

@@ -25,8 +25,6 @@ public slots:
 signals:
     void updateImage();
     void applyChanges();
-    void revertBack();
-    void finished();
 
 };
 

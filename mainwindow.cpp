@@ -11,6 +11,15 @@ MainWindow::MainWindow(QWidget *parent) :
     image = new ImageManager();
     connect(image, SIGNAL(redraw()), this, SLOT(updateImage()));
 
+    // Create PluginManager, connect signals, set handlers and load plugins
+    plugins = new PluginManager(this);
+    plugins->setImageManager(image);
+    plugins->setToolsMenu(ui->menuTools);
+    plugins->setFiltersMenu(ui->menuFilters);
+    connect(plugins, SIGNAL(updateImage()), this, SLOT(updateImage()));
+    connect(plugins, SIGNAL(applyChanges()), image, SLOT(changes()));
+    plugins->loadAll();
+
     // Allow QLabel with QPixmap to scale down
     ui->area->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
@@ -23,27 +32,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionAbout_Qt, SIGNAL(triggered()), this, SLOT(aboutQtPopup()));
 
     connect(ui->actionUndo, SIGNAL(triggered()), image, SLOT(undo()));
-
-    // Load plugins
-    loadTools();
-    loadFilters();
 }
 
 MainWindow::~MainWindow()
 {
-    // Free plugins
-    unsigned int filtersCount = 0;
-    QPair<PluginInterface*, QPluginLoader*> pair1;
-    foreach (pair1, filters) {
-        qDebug() << "Unloading filter" << pair1.first->getPluginName() << "...";
-        pair1.second->unload();
-        delete pair1.second;
-        filtersCount++;
-    }
-
-    qDebug() << "Unloaded" << filtersCount << "filters";
-
     delete image;
+    delete plugins;
     delete ui;
 }
 
@@ -267,89 +261,4 @@ void MainWindow::updateWindowTitle(FileState state) {
 
     // Debug info
     qDebug() << "Updating window title with state =" << state;
-}
-
-void MainWindow::loadTools() {
-    //
-}
-
-void MainWindow::loadFilters() {
-    // Set plugin directory
-    QDir pluginsDir("plugins/filters");
-    qDebug() << "Loading filters from" << pluginsDir.absolutePath();
-
-    // File filter
-    QStringList filenameFilters;
-    #ifdef __linux
-        filenameFilters << "*.so";
-    #elif _WIN32
-        filenameFilters << "*.dll";
-    #endif
-
-    // Iterate over files
-    unsigned int pluginCount = 0;
-    foreach (QString filename, pluginsDir.entryList(filenameFilters)) {
-        // Ignore files without "filter" in name
-        if (!filename.toLower().contains("filter"))
-            continue;
-
-        // Debug info
-        qDebug() << "Loading filter from" << filename;
-
-        // Try to load
-        QPluginLoader *loader = new QPluginLoader(pluginsDir.absoluteFilePath(filename));
-        QObject *pluginInstance = loader->instance();
-
-        if (pluginInstance) {
-            // Cast QObject to plugin
-            PluginInterface *plugin = qobject_cast<PluginInterface*>(pluginInstance);
-
-            // Check if loaded correct
-            if (plugin) {
-                // Add plugin to vector
-                filters.push_back(QPair<PluginInterface*, QPluginLoader*>(plugin, loader));
-
-                // If this is first plugin, clear list
-                if (pluginCount == 0)
-                    ui->menuFilters->clear();
-
-                // Add menu entry and connect it
-                QAction *menuAction = ui->menuFilters->addAction(tr(plugin->getPluginName().toStdString().c_str()));
-                QVariant pluginVariant = qVariantFromValue((void*)plugin);
-                menuAction->setData(pluginVariant);
-                connect(menuAction, SIGNAL(triggered()), this, SLOT(pluginExecute()));
-
-                // Connect plugin signals
-                connect(plugin, SIGNAL(updateImage()), this, SLOT(updateImage()));
-                connect(plugin, SIGNAL(applyChanges()), image, SLOT(changes()));
-
-                // Increase counter
-                pluginCount++;
-            } else {
-                qDebug() << "Failed to load filter" << filename;
-            }
-        } else {
-            qDebug() << "Can't' load filter plugin from file" << filename;
-            qDebug() << "Error:" << loader->errorString();
-        }
-    }
-
-    // Debug info
-    qDebug() << "Loaded" << pluginCount << "filters.";
-
-}
-
-void MainWindow::pluginExecute() {
-    // Get sender() and cast it to QAction
-    QAction *action = qobject_cast<QAction*>(sender());
-
-    // Get data from QAction
-    QVariant v = action->data();
-
-    // Convert QVariant to FilterPluginInterface*
-    PluginInterface* plugin = (PluginInterface*)v.value<void*>();
-
-    // Execute
-    plugin->execute(image->get());
-
 }

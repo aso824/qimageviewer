@@ -20,5 +20,4 @@ void GreyscaleFilter::execute(QImage *image) {
     // Emit signals
     emit updateImage();
     emit applyChanges();
-    emit finished();
 }

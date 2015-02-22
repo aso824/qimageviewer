@@ -8,13 +8,10 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QResizeEvent>
-#include <QPluginLoader>
-#include <QVector>
-#include <QPair>
-#include <QVariant>
 
 #include "plugininterface.h"
 #include "imagemanager.h"
+#include "pluginmanager.h"
 
 enum FileState {
     NONE, OPENED, CHANGES
@@ -37,7 +34,7 @@ private:
     ImageManager *image;
     QString fileName;
     FileState fState = NONE;
-    QVector<QPair<PluginInterface*, QPluginLoader*>> filters;
+    PluginManager* plugins;
 
     // UI events
     void resizeEvent(QResizeEvent *);
@@ -52,11 +49,6 @@ private slots:
     void closeFile();
     void aboutAuthorPopup();
     void aboutQtPopup();
-
-    // Plugins
-    void loadTools();
-    void loadFilters();
-    void pluginExecute();
 
 public slots:
     void updateWindowTitle(FileState state);
