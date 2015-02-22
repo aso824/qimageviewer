@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     plugins->setFiltersMenu(ui->menuFilters);
     connect(plugins, SIGNAL(updateImage()), this, SLOT(updateImage()));
     connect(plugins, SIGNAL(applyChanges()), image, SLOT(changes()));
+    connect(plugins, SIGNAL(applyChanges()), this, SLOT(imageChanged()));
     plugins->loadAll();
 
     // Create and connect recent files QActionGroup
@@ -97,6 +98,13 @@ void MainWindow::updateImage() {
 }
 
 void MainWindow::loadFile(QString path) {
+    // Close previous file
+    this->closeFile();
+
+    // Set fileName
+    if (fileName != path)
+        fileName = path;
+
     // Debug info
     qDebug() << "Opening file " << fileName;
 
@@ -189,6 +197,10 @@ void MainWindow::saveFileAs() {
 }
 
 void MainWindow::closeFile() {
+    // Check file
+    if (image->get()->isNull())
+        return;
+
     // If file is modified, ask user what to do
     if (fState == CHANGES) {
         // Ask about save
@@ -265,6 +277,10 @@ void MainWindow::updateWindowTitle(FileState state) {
 
     // Set it
     this->setWindowTitle(newTitle);
+}
+
+void MainWindow::imageChanged() {
+    this->updateWindowTitle(FileState::CHANGES);
 }
 
 QStringList MainWindow::loadRecent() {
@@ -360,7 +376,9 @@ void MainWindow::recentFileSlot(QAction *action) {
     QVariant pathVariant = action->data();
     QString path = pathVariant.toString();
 
-    // Set file name and load it
-    fileName = path;
+    // Close previous file
+    this->closeFile();
+
+    // Load it
     this->loadFile(path);
 }
