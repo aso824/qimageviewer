@@ -58,7 +58,14 @@
     <property name="title">
      <string>File</string>
     </property>
+    <widget class="QMenu" name="menuRecent_files">
+     <property name="title">
+      <string>Recent files</string>
+     </property>
+     <addaction name="actionNo_history"/>
+    </widget>
     <addaction name="actionOpen"/>
+    <addaction name="menuRecent_files"/>
     <addaction name="actionSave"/>
     <addaction name="actionSave_as"/>
     <addaction name="actionClose"/>
@@ -210,6 +217,19 @@
   <action name="actionRedo">
    <property name="text">
     <string>Redo</string>
+   </property>
+  </action>
+  <action name="actionNo_files_available">
+   <property name="text">
+    <string>No files available</string>
+   </property>
+  </action>
+  <action name="actionNo_history">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>No history</string>
    </property>
   </action>
  </widget>

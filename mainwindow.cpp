@@ -20,6 +20,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(plugins, SIGNAL(applyChanges()), image, SLOT(changes()));
     plugins->loadAll();
 
+    // Create and connect recent files QActionGroup
+    recentFilesGroup = new QActionGroup(this);
+    connect(this->recentFilesGroup, SIGNAL(triggered(QAction*)), this, SLOT(recentFileSlot(QAction*)));
+
+    // Load recent files
+    this->loadRecent();
+
     // Allow QLabel with QPixmap to scale down
     ui->area->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
@@ -37,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    delete recentFilesGroup;
     delete image;
     delete plugins;
     delete ui;
@@ -88,16 +96,7 @@ void MainWindow::updateImage() {
     }
 }
 
-void MainWindow::openFileDialog() {
-    // Ask for file to open
-    QString fileNameTmp = QFileDialog::getOpenFileName(this, tr("Open image"), "",
-                          tr("Supported image types (*.jpg *.jpeg *.png *.gif *.bmp);;JPEG (*.jpg *.jpeg);;PNG (*.png);;GIF(*.gif);;Windows bitmap (*.bmp)"));
-
-    if (fileNameTmp != "")
-        fileName = fileNameTmp;
-    else
-        return;
-
+void MainWindow::loadFile(QString path) {
     // Debug info
     qDebug() << "Opening file " << fileName;
 
@@ -118,11 +117,29 @@ void MainWindow::openFileDialog() {
 
         // Adding original copy
         image->changes();
+
+        // Add filename to history
+        this->saveRecent();
     } else {
         // Show error
         QMessageBox(QMessageBox::Critical, tr("Error"), tr(QString("Can't open file \"" + fileName + "\"!").toStdString().c_str()), QMessageBox::Ok, this)
                 .exec();
     }
+}
+
+void MainWindow::openFileDialog() {
+    // Ask for file to open
+    QString fileNameTmp = QFileDialog::getOpenFileName(this, tr("Open image"), "",
+                          tr("Supported image types (*.jpg *.jpeg *.png *.gif *.bmp);;JPEG (*.jpg *.jpeg);;PNG (*.png);;GIF(*.gif);;Windows bitmap (*.bmp)"));
+
+    // Check if string is empty (cancel button hit)
+    if (fileNameTmp != "")
+        fileName = fileNameTmp;
+    else
+        return;
+
+    // Call loader
+    this->loadFile(fileName);
 }
 
 void MainWindow::saveFile() {
@@ -248,4 +265,102 @@ void MainWindow::updateWindowTitle(FileState state) {
 
     // Set it
     this->setWindowTitle(newTitle);
+}
+
+QStringList MainWindow::loadRecent() {
+    // Clear menu
+    ui->menuRecent_files->clear();
+
+    // Prepare variable
+    QStringList recentFiles;
+
+    // Load settings file
+    QSettings settings("config.ini", QSettings::IniFormat, this);
+
+    // Start reading array
+    int size = settings.beginReadArray("recent");
+
+    for (int i = 0; i < size; i++) {
+        // Set array index
+        settings.setArrayIndex(i);
+
+        // Get path from current index
+        QString pathStr = settings.value("path").toString();
+
+        // Add it to list
+        recentFiles << pathStr;
+
+        // Extract only filename
+        QString filename = QFileInfo(pathStr).fileName();
+
+        // Add menu item
+        QAction* newAction = ui->menuRecent_files->addAction(filename);
+        QVariant data = QVariant(pathStr);
+        newAction->setData(data);
+        newAction->setActionGroup(recentFilesGroup);
+    }
+
+    // End reading array
+    settings.endArray();
+
+    // Display text when no files
+    if (size == 0) {
+        QAction* newAction = ui->menuRecent_files->addAction("No history");
+        newAction->setDisabled(true);
+    }
+
+    // Debug info
+    qDebug() << "Loaded" << size << "recent files";
+
+    // Return QStringList
+    return recentFiles;
+}
+
+void MainWindow::saveRecent() {
+    // Get current recent files
+    QStringList recentFiles = this->loadRecent();
+
+    // Iterate over list and erase current filename
+    for (int i = 0; i < recentFiles.size(); i++) {
+        // Match current filename with QStringList item
+        if (recentFiles[i] == fileName) {
+            // If it's same, erase and end loop
+            recentFiles.erase(recentFiles.begin() + i);
+            break;
+        }
+    }
+
+    // Add current filename
+    recentFiles.push_front(fileName);
+
+    // Cut excess data
+    if (recentFiles.size() > 5)
+        recentFiles.erase(recentFiles.begin() + 5, recentFiles.end());
+
+    // Open settings file
+    QSettings settings("config.ini", QSettings::IniFormat, this);
+
+    // Begin writing
+    settings.beginWriteArray("recent");
+
+    for (int i = 0; i < recentFiles.size(); i++) {
+        settings.setArrayIndex(i);
+        settings.setValue("path", recentFiles.at(i));
+    }
+
+    // End writing
+    settings.endArray();
+
+    // Reload menu
+    this->loadRecent();
+}
+
+void MainWindow::recentFileSlot(QAction *action) {
+    // Get data from QAction
+    QVariant pathVariant = action->data();
+    QString path = pathVariant.toString();
+
+    // Set file name and load it
+    fileName = path;
+    this->loadFile(path);
 }

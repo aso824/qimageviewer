@@ -8,6 +8,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QResizeEvent>
+#include <QSettings>
+#include <QActionGroup>
 
 #include "plugininterface.h"
 #include "imagemanager.h"
@@ -35,11 +37,15 @@ private:
     QString fileName;
     FileState fState = NONE;
     PluginManager* plugins;
+    QActionGroup *recentFilesGroup;
 
     // UI events
     void resizeEvent(QResizeEvent *);
     void closeEvent(QCloseEvent *event);
+    void loadFile(QString path);
     void setMenuState(bool state);
+    QStringList loadRecent();
+    void saveRecent();
 
 private slots:
     // Menu
@@ -49,6 +55,7 @@ private slots:
     void closeFile();
     void aboutAuthorPopup();
     void aboutQtPopup();
+    void recentFileSlot(QAction* action);
 
 public slots:
     void updateWindowTitle(FileState state);
