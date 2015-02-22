@@ -32,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionAbout_Qt, SIGNAL(triggered()), this, SLOT(aboutQtPopup()));
 
     connect(ui->actionUndo, SIGNAL(triggered()), image, SLOT(undo()));
+    connect(ui->actionRedo, SIGNAL(triggered()), image, SLOT(redo()));
 }
 
 MainWindow::~MainWindow()
@@ -92,12 +93,13 @@ void MainWindow::openFileDialog() {
     QString fileNameTmp = QFileDialog::getOpenFileName(this, tr("Open image"), "",
                           tr("Supported image types (*.jpg *.jpeg *.png *.gif *.bmp);;JPEG (*.jpg *.jpeg);;PNG (*.png);;GIF(*.gif);;Windows bitmap (*.bmp)"));
 
-    qDebug() << "QFileDialog returned" << fileNameTmp;
-
     if (fileNameTmp != "")
         fileName = fileNameTmp;
     else
         return;
+
+    // Debug info
+    qDebug() << "Opening file " << fileName;
 
     // Try to load
     if (image->load(fileName)) {
@@ -113,9 +115,6 @@ void MainWindow::openFileDialog() {
 
         // Change window title
         updateWindowTitle(OPENED);
-
-        // Debug info
-        qDebug() << "Opened file" << fileName;
 
         // Adding original copy
         image->changes();
@@ -146,8 +145,6 @@ void MainWindow::saveFileAs() {
         // Ask for file name
         QString fileNameTmp = QFileDialog::getSaveFileName(this, tr("Save image as"), "",
                               tr("JPEG (*.jpg);;PNG (*.png);;GIF (*.gif);;Windows bitmap (*.bmp)"));
-
-        qDebug() << "Filename to save:" << fileNameTmp;
 
         // If user hit cancel, QFileDialog will return empty string
         if (fileNameTmp == "")
@@ -195,10 +192,6 @@ void MainWindow::closeFile() {
         }
     }
 
-
-    // Debug info
-    qDebug() << "Closing file" << fileName;
-
     // Hide image
     ui->area->clear();
 
@@ -232,9 +225,6 @@ void MainWindow::setMenuState(bool state) {
     ui->menuEdit->setEnabled(state);
     ui->menuFilters->setEnabled(state);
     ui->menuTools->setEnabled(state);
-
-    // Debug info
-    qDebug() << "Set menu state to" << state;
 }
 
 void MainWindow::updateWindowTitle(FileState state) {
@@ -258,7 +248,4 @@ void MainWindow::updateWindowTitle(FileState state) {
 
     // Set it
     this->setWindowTitle(newTitle);
-
-    // Debug info
-    qDebug() << "Updating window title with state =" << state;
 }

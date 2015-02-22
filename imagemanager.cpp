@@ -18,9 +18,6 @@ bool ImageManager::load(QString filename) {
     // Copy filename
     file = filename;
 
-    // Debug info
-    qDebug() << "ImageManager: loading" << filename;
-
     // Load
     return workingCopy->load(filename);
 }
@@ -85,20 +82,15 @@ void ImageManager::setCapacity(unsigned short maxCapacity) {
 void ImageManager::changes() {
     // If newer images exists, delete it
     if (current > 0) {
-        // Debug info
-        qDebug() << "ImageManager:changes(): index =" << current << ", erasing newer elements";
         images.erase(images.begin(), images.begin() + current);
         current = 0;
     }
 
     // Copy working image to history
     images.push_front(new QImage(*workingCopy));
-    qDebug() << "ImageManager::changes(): new copy added, count =" << images.size();
 
     // Delete old images
     if (images.size() > max) {
-        // Debug info
-        qDebug() << "ImageManager::changes(): erased" << images.size() - max << "old elements";
 
         images.erase(images.begin() + max, images.end());
     }
