@@ -8,6 +8,7 @@
 #include <QImage>
 #include <QColor>
 #include <QMessageBox>
+#include <QDebug>
 
 class SEPIAFILTERSHARED_EXPORT SepiaFilter : public PluginInterface
 {
@@ -22,21 +23,20 @@ class SEPIAFILTERSHARED_EXPORT SepiaFilter : public PluginInterface
         PluginType getType() { return FILTER; }
 
     public slots:
-        void execute(QImage *img);
+        void execute(QImage *image);
 
     signals:
         void updateImage();
         void applyChanges();
 
     private slots:
-        void process(int factor = 30);
+        void process(int factor = 25);
         void endOK();
         void endCancel();
 
     protected:
-        QImage *image;
+        QImage *img;
         QImage backup;
-        void processGreyscale(QImage *image);
 };
 
 #endif // SEPIAFILTER_H

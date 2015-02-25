@@ -2,6 +2,7 @@
 #define DIALOG_H
 
 #include <QDialog>
+#include <QAbstractButton>
 
 namespace Ui {
 class Dialog;
@@ -21,9 +22,9 @@ signals:
     void factorChanged(int);
 
 private slots:
-    void sliderChange(int v) { emit factorChanged(v); }
-    void buttonOK() { emit pressedOK(); }
-    void buttonCancel() { emit pressedCancel(); }
+    void sliderChange(int v);
+    void buttonClick(QAbstractButton *btn);
+    void fullScale();
 
 private:
     Ui::Dialog *ui;

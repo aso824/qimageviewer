@@ -1,14 +1,14 @@
 #include "sepiafilter.h"
 
-void SepiaFilter::execute(QImage *img) {
+void SepiaFilter::execute(QImage *image) {
     // If QImage is null, show error and stop
-    if (image->isNull()) {
+    if (!image || image->isNull()) {
         QMessageBox(QMessageBox::Critical, tr("Plugin error"), tr("No image loaded."), QMessageBox::Ok).exec();
         return;
     }
 
     // Ptr
-    image = img;
+    img = image;
 
     // Make backup
     backup = QImage(*image);
@@ -29,21 +29,31 @@ void SepiaFilter::execute(QImage *img) {
 }
 
 void SepiaFilter::process(int factor) {
-    // First, convert to greyscale
-    this->processGreyscale(image);
+    // Copy from backup
+    for (int i = 0; i < img->width(); i++) {
+        for (int j = 0; j < img->height(); j++) {
+            img->setPixel(i, j, backup.pixel(i, j));
+        }
+    }
 
     // Iterate over each pixel
-    for (int i = 0; i < image->width(); i++) {
-        for (int j = 0; j < image->height(); j++) {
+    for (int i = 0; i < img->width(); i++) {
+        for (int j = 0; j < img->height(); j++) {
             // Recalculate RGB for pixel
-            QColor e = image->pixel(i, j);
-            int r = e.red() + 2 * factor;
-            int g = e.green() + factor;
+            QColor e = img->pixel(i, j);
 
+            // Convert to greyscale
+            int s = (float)e.red() * 0.299 + (float)e.green() * 0.587 + (float)e.blue() * 0.114;
+
+            // Convert to sepia
+            int r = s + 2 * factor;
+            int g = s + factor;
+
+            // Limit pixel value
             if (r > 255) r = 255;
             if (g > 255) g = 255;
 
-            image->setPixel(i, j, QColor(r, g, e.blue()).rgb());
+            img->setPixel(i, j, QColor(r, g, e.blue()).rgb());
         }
     }
 
@@ -56,17 +66,11 @@ void SepiaFilter::endOK() {
 }
 
 void SepiaFilter::endCancel() {
-    img = (QImage*)backup;
-}
+    qDebug() << "SepiaFilter: canceled";
 
-void SepiaFilter::processGreyscale(QImage *image) {
-    // Iterate over each pixel
-    for (int i = 0; i < image->width(); i++) {
-        for (int j = 0; j < image->height(); j++) {
-            // Recalculate RGB for pixel
-            QColor e = image->pixel(i, j);
-            int s = (float)e.red() * 0.299 + (float)e.green() * 0.587 + (float)e.blue() * 0.114;
-            image->setPixel(i, j, QColor(s, s, s).rgb());
-        }
-    }
+    // Revert changes
+    emit setImage(new QImage(backup));
+
+    // Send signal
+    emit updateImage();
 }
