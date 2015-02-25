@@ -38,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionClose, SIGNAL(triggered()), this, SLOT(closeFile()));
     connect(ui->actionAbout_author, SIGNAL(triggered()), this, SLOT(aboutAuthorPopup()));
     connect(ui->actionAbout_Qt, SIGNAL(triggered()), this, SLOT(aboutQtPopup()));
+    connect(ui->actionManage_plugins, SIGNAL(triggered()), this, SLOT(managePluginsDialog()));
 
     connect(ui->actionUndo, SIGNAL(triggered()), image, SLOT(undo()));
     connect(ui->actionRedo, SIGNAL(triggered()), image, SLOT(redo()));
@@ -244,6 +245,11 @@ void MainWindow::aboutAuthorPopup() {
 
 void MainWindow::aboutQtPopup() {
     QMessageBox::aboutQt(this, tr("About Qt"));
+}
+
+void MainWindow::managePluginsDialog() {
+    ManagePlugins *w = new ManagePlugins(this);
+    w->show();
 }
 
 void MainWindow::setMenuState(bool state) {

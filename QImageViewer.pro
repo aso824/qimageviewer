@@ -16,13 +16,16 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     imagemanager.cpp \
     plugininterface.cpp \
-    pluginmanager.cpp
+    pluginmanager.cpp \
+    manageplugins.cpp
 
 HEADERS  += mainwindow.h \
     imagemanager.h \
     plugininterface.h \
-    pluginmanager.h
+    pluginmanager.h \
+    manageplugins.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    manageplugins.ui
 
 CONFIG   += c++11

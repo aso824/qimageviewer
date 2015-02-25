@@ -14,6 +14,7 @@
 #include "plugininterface.h"
 #include "imagemanager.h"
 #include "pluginmanager.h"
+#include "manageplugins.h"
 
 enum FileState {
     NONE, OPENED, CHANGES
@@ -55,6 +56,7 @@ private slots:
     void closeFile();
     void aboutAuthorPopup();
     void aboutQtPopup();
+    void managePluginsDialog();
     void recentFileSlot(QAction* action);
 
 public slots:
