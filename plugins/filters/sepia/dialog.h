@@ -15,6 +15,16 @@ public:
     explicit Dialog(QWidget *parent = 0);
     ~Dialog();
 
+signals:
+    void pressedOK();
+    void pressedCancel();
+    void factorChanged(int);
+
+private slots:
+    void sliderChange(int v) { emit factorChanged(v); }
+    void buttonOK() { emit pressedOK(); }
+    void buttonCancel() { emit pressedCancel(); }
+
 private:
     Ui::Dialog *ui;
 };

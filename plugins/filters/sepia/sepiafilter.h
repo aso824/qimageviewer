@@ -3,9 +3,11 @@
 
 #include "sepiafilter_global.h"
 #include "../../../plugininterface.h"
+#include "dialog.h"
 
 #include <QImage>
 #include <QColor>
+#include <QMessageBox>
 
 class SEPIAFILTERSHARED_EXPORT SepiaFilter : public PluginInterface
 {
@@ -20,19 +22,19 @@ class SEPIAFILTERSHARED_EXPORT SepiaFilter : public PluginInterface
         PluginType getType() { return FILTER; }
 
     public slots:
-        void execute(QImage *image);
+        void execute(QImage *img);
 
     signals:
         void updateImage();
         void applyChanges();
 
     private slots:
-        void process(QImage *image, int factor = 30);
+        void process(int factor = 30);
         void endOK();
         void endCancel();
 
     protected:
-        QImage *img;
+        QImage *image;
         QImage backup;
         void processGreyscale(QImage *image);
 };
