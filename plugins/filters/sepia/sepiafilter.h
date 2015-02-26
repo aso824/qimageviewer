@@ -17,6 +17,7 @@ class SEPIAFILTERSHARED_EXPORT SepiaFilter : public PluginInterface
     Q_INTERFACES(PluginInterface)
 
     public:
+        ~SepiaFilter();
         QString getPluginName() { return "Sepia"; }
         QString getAuthorName() { return "Jan \"aso\" Szenborn"; }
         float getVersion() { return 1.0f; }
@@ -35,8 +36,9 @@ class SEPIAFILTERSHARED_EXPORT SepiaFilter : public PluginInterface
         void endCancel();
 
     protected:
-        QImage *img;
+        QImage* img;
         QImage backup;
+        Dialog* dialog;
 };
 
 #endif // SEPIAFILTER_H

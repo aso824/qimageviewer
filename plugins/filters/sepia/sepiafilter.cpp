@@ -1,5 +1,9 @@
 #include "sepiafilter.h"
 
+SepiaFilter::~SepiaFilter() {
+    delete dialog;
+}
+
 void SepiaFilter::execute(QImage *image) {
     // If QImage is null, show error and stop
     if (!image || image->isNull()) {
@@ -14,7 +18,7 @@ void SepiaFilter::execute(QImage *image) {
     backup = QImage(*image);
 
     // Create form
-    Dialog* dialog = new Dialog(0);
+    dialog = new Dialog(0);
 
     // Make connections
     connect(dialog, SIGNAL(factorChanged(int)), this, SLOT(process(int)));
@@ -53,7 +57,7 @@ void SepiaFilter::process(int factor) {
             if (r > 255) r = 255;
             if (g > 255) g = 255;
 
-            img->setPixel(i, j, QColor(r, g, e.blue()).rgb());
+            img->setPixel(i, j, QColor(r, g, s).rgb());
         }
     }
 
