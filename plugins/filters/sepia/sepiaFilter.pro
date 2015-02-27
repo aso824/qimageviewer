@@ -16,7 +16,7 @@ SOURCES += sepiafilter.cpp \
 
 HEADERS += sepiafilter.h\
         sepiafilter_global.h \
-    ../../../plugininterface.h \
+    ../../../include/plugininterface.h \
     dialog.h
 
 unix {

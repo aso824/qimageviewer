@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+#include "include/mainwindow.h"
 #include <QApplication>
 
 #define QT_DEBUG_PLUGINS 1

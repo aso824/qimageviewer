@@ -2,7 +2,7 @@
 #define GREYSCALEFILTER_H
 
 #include "greyscalefilter_global.h"
-#include "../../../plugininterface.h"
+#include "../../../include/plugininterface.h"
 #include "dialog.h"
 
 #include <QString>

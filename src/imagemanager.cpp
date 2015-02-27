@@ -1,4 +1,4 @@
-#include "imagemanager.h"
+#include "../include/imagemanager.h"
 
 ImageManager::ImageManager(QString filename, QObject *parent) :
     QObject(parent), file(filename)

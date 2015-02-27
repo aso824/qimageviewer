@@ -16,7 +16,7 @@ SOURCES += \
     dialog.cpp
 
 HEADERS +=\
-        ../../../plugininterface.h \
+        ../../../include/plugininterface.h \
     greyscalefilter.h \
     greyscalefilter_global.h \
     dialog.h

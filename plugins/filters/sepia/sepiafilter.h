@@ -2,7 +2,7 @@
 #define SEPIAFILTER_H
 
 #include "sepiafilter_global.h"
-#include "../../../plugininterface.h"
+#include "../../../include/plugininterface.h"
 #include "dialog.h"
 
 #include <QImage>

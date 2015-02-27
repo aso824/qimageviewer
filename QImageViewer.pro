@@ -13,17 +13,17 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    imagemanager.cpp \
-    plugininterface.cpp \
-    pluginmanager.cpp \
-    manageplugins.cpp
+        src/mainwindow.cpp \
+    src/imagemanager.cpp \
+    src/plugininterface.cpp \
+    src/pluginmanager.cpp \
+    src/manageplugins.cpp
 
-HEADERS  += mainwindow.h \
-    imagemanager.h \
-    plugininterface.h \
-    pluginmanager.h \
-    manageplugins.h
+HEADERS  += include/mainwindow.h \
+    include/imagemanager.h \
+    include/plugininterface.h \
+    include/pluginmanager.h \
+    include/manageplugins.h
 
 FORMS    += mainwindow.ui \
     manageplugins.ui

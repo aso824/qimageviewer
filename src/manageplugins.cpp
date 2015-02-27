@@ -1,4 +1,4 @@
-#include "manageplugins.h"
+#include "../include/manageplugins.h"
 #include "ui_manageplugins.h"
 
 ManagePlugins::ManagePlugins(QWidget *parent) :
