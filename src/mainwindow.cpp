@@ -400,4 +400,21 @@ void MainWindow::fillToolbar() {
     ui->mainToolBar->addSeparator();
     ui->mainToolBar->addAction(QIcon("images/undo.png"), tr("Undo"), image, SLOT(undo()));
     ui->mainToolBar->addAction(QIcon("images/redo.png"), tr("Redo"), image, SLOT(redo()));
+    ui->mainToolBar->addSeparator();
+
+    QAction *actionMove = new QAction(QIcon("images/move.png"), tr("Move"), ui->mainToolBar);
+    actionMove->setCheckable(true);
+    actionMove->setChecked(true);
+    QAction *actionSelect = new QAction(QIcon("images/select.png"), tr("Select"), ui->mainToolBar);
+    actionSelect->setCheckable(true);
+    QAction *actionZoom = new QAction(QIcon("images/zoom.png"), tr("Zoom"), ui->mainToolBar);
+    actionZoom->setCheckable(true);
+
+    QActionGroup *group1 = new QActionGroup(this);
+    group1->addAction(actionMove);
+    group1->addAction(actionSelect);
+    group1->addAction(actionZoom);
+    QList<QAction*> actions;
+    actions << actionMove << actionSelect << actionZoom;
+    ui->mainToolBar->addActions(actions);
 }

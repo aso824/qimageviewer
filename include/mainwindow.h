@@ -10,6 +10,7 @@
 #include <QResizeEvent>
 #include <QSettings>
 #include <QActionGroup>
+#include <QToolButton>
 
 #include "plugininterface.h"
 #include "imagemanager.h"
