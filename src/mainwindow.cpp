@@ -396,4 +396,8 @@ void MainWindow::fillToolbar() {
     ui->mainToolBar->addAction(QIcon("images/open-folder.png"), tr("Open"), this, SLOT(openFileDialog()));
     ui->mainToolBar->addAction(QIcon("images/save.png"), tr("Save"), this, SLOT(saveFile()));
     ui->mainToolBar->addAction(QIcon("images/save-as.png"), tr("Save as"), this, SLOT(saveFileAs()));
+    ui->mainToolBar->addAction(QIcon("images/close.png"), tr("Close"), this, SLOT(closeFile()));
+    ui->mainToolBar->addSeparator();
+    ui->mainToolBar->addAction(QIcon("images/undo.png"), tr("Undo"), image, SLOT(undo()));
+    ui->mainToolBar->addAction(QIcon("images/redo.png"), tr("Redo"), image, SLOT(redo()));
 }
