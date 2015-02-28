@@ -47,6 +47,7 @@ private:
     void setMenuState(bool state);
     QStringList loadRecent();
     void saveRecent();
+    void fillToolbar();
 
 private slots:
     // Menu

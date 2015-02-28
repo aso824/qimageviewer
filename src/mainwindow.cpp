@@ -42,6 +42,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->actionUndo, SIGNAL(triggered()), image, SLOT(undo()));
     connect(ui->actionRedo, SIGNAL(triggered()), image, SLOT(redo()));
+
+    // Fill ToolBar
+    this->fillToolbar();
 }
 
 MainWindow::~MainWindow()
@@ -387,4 +390,10 @@ void MainWindow::recentFileSlot(QAction *action) {
 
     // Load it
     this->loadFile(path);
+}
+
+void MainWindow::fillToolbar() {
+    ui->mainToolBar->addAction(QIcon("images/open-folder.png"), tr("Open"), this, SLOT(openFileDialog()));
+    ui->mainToolBar->addAction(QIcon("images/save.png"), tr("Save"), this, SLOT(saveFile()));
+    ui->mainToolBar->addAction(QIcon("images/save-as.png"), tr("Save as"), this, SLOT(saveFileAs()));
 }
