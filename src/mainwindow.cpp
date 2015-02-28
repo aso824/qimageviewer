@@ -263,6 +263,19 @@ void MainWindow::setMenuState(bool state) {
     ui->menuEdit->setEnabled(state);
     ui->menuFilters->setEnabled(state);
     ui->menuTools->setEnabled(state);
+    \
+    // Toolbar; first icon is open so it's always enabled
+    {
+        bool flag = false;
+        for (QAction *element: ui->mainToolBar->actions()) {
+            if (!flag) {
+                flag = true;
+                continue;
+            }
+
+            element->setEnabled(state);
+        }
+    }
 }
 
 void MainWindow::updateWindowTitle(FileState state) {
@@ -417,4 +430,17 @@ void MainWindow::fillToolbar() {
     QList<QAction*> actions;
     actions << actionMove << actionSelect << actionZoom;
     ui->mainToolBar->addActions(actions);
+
+    // Default, disable all actions except first
+    {
+        bool flag = false;
+        for (QAction *element: ui->mainToolBar->actions()) {
+            if (!flag) {
+                flag = true;
+                continue;
+            }
+
+            element->setDisabled(true);
+        }
+    }
 }
